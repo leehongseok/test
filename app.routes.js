@@ -35,7 +35,11 @@ router.get('/', function(req, res, next){
   res.render('index'); // 여기 있는 파일이 home.hbs입니다. base.hbs에 home.hbs가 합쳐져서 render 
 //  res.render('home', {layout:false});  //이렇게하면 기본 레이아웃인 base.hbs가 빠진상태로 render 
 });
-
+router.get('/', function(req, res, next){
+  
+  res.render('base'); // 여기 있는 파일이 home.hbs입니다. base.hbs에 home.hbs가 합쳐져서 render 
+//  res.render('home', {layout:false});  //이렇게하면 기본 레이아웃인 base.hbs가 빠진상태로 render 
+});
 
 router.get('/bbs', function(req, res, next){
   res.render('bbs'); // 여기 있는 파일이 home.hbs입니다. base.hbs에 home.hbs가 합쳐져서 render 
