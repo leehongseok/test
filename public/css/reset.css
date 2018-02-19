@@ -1,0 +1,86 @@
+﻿@import url(https://fonts.googleapis.com/earlyaccess/nanumgothic.css);	/*나눔고딕*/
+@import url(https://fonts.googleapis.com/earlyaccess/jejugothic.css);	/*제주고딕*/
+@import url(https://fonts.googleapis.com/earlyaccess/jejumyeongjo.css);	/*제주명조*/
+@import url(https://fonts.googleapis.com/earlyaccess/notosanskr.css);	/*Noto Sans KR*/
+@import url(https://spoqa.github.io/spoqa-han-sans/css/SpoqaHanSans-kr.css);	/*스포카한스*/
+@import url(https://spoqa.github.io/spoqa-han-sans/css/SpoqaHanSans-jp.css);
+@import url(https://fonts.googleapis.com/earlyaccess/notosansgothic.css);		/* Noto Sans */
+@import url(https://fonts.googleapis.com/earlyaccess/nanummyeongjo.css);			/* 나눔명조 */
+
+/**/
+@font-face{
+	font-family:'NanumSquare';
+	src:url('../fonts/NanumSquare.woff');
+	src:url('../fonts/NanumSquareR.woff');
+}
+@font-face{
+	font-family:'Helvetica-Bold';
+	src:url('../fonts/Helvetica75-Bold.woff');
+}
+@font-face{
+	font-family:'HelveticaNeue';
+	src:url('../fonts/HelveticaNeueRegular.woff');
+}
+@font-face{
+	font-family:'HelveticaNeueIt';
+	src:url('../fonts/HelveticaNeueItalic.woff');
+}
+
+/* reset.css */
+*{margin:0; padding:0; font-family: 'Noto Sans Gothic', sans-serif;}
+*html{background-color:#fff; height:1px;}/* IE6 잔상방지 */
+body{
+	position: relative;
+	
+	width:100%;
+	scrollbar-face-color:#FFFFFF;
+	scrollbar-shadow-color:#BBBBBB;
+	scrollbar-highlight-color:#FFFFFF;
+	scrollbar-3dlight-color:#FFFFFF;
+	scrollbar-darkshadow-color:#FFFFFF;
+	scrollbar-track-color:#EEEEEE;
+	scrollbar-arrow-color:#BBBBBB;
+	background-color:#fafafa;/* IE6 잔상방지 */ /* text-align:center; */
+}
+.cf:after{
+	content:"";
+	display:block;
+	clear:both; 
+}
+*{margin:0;padding:0;}
+h1,h2,h3,h4,h5,h6{margin:0;padding:0;}
+p{margin:0;padding:0;}
+input, select, textarea{color:#000;}
+fieldset, img, iframe, frameset, button{border:none;}
+hr{clear:both;visibility:hidden;height:0}
+caption{display:none}
+legend{display:none}
+address, em{font-style:normal;}
+dl,dt,tt,ol, ul, li{list-style:none;margin:0;padding:0;}
+a{text-decoration:none; color:#000;}
+a:hover{text-decoration:none; color:#000;}
+
+.blind{display:none;}
+
+input[type=text], input[type=password], input[type=submit], input[type=search], textarea {
+	/* 아이폰의 둥근모서리와 쉐도우를 안보이게 */
+	-webkit-appearance:none;
+	/*-webkit-border-radius:0;*/
+}
+input, select, textarea{
+	border:none;
+	box-shadow:none;
+	outline:none;
+}
+input input[type="submit"]{cursor:pointer;}
+/*
+	font-family: 'Jeju Myeongjo', serif;		제주명조
+	font-family: 'Jeju Gothic', sans-serif;		제주고딕
+	font-family: 'Nanum Gothic', sans-serif;	나눔고딕
+	font-family: 'Noto Sans KR', sans-serif;	Noto Sans KR
+	font-family: 'Spoqa Han Sans', 'Spoqa Han Sans JP', 'Sans-serif'; 
+	font-family:'NanumSquare', sans-serif;		나눔스퀘어
+	font-family: 'Cutive-Mono1';
+	font-family: 'Noto Sans Gothic', sans-serif;	노토고딕
+	font-family: 'Nanum Myeongjo', serif;		나눔명조
+*/

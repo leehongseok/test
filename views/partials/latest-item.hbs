@@ -1,0 +1,23 @@
+<!-- 기사 -->
+<li>
+	{{#with mainImg }}
+	<article class="img">
+		<a href="/article/{{../category_uri}}/{{../objectId}}"><img src="{{this}}" /></a>
+	</article>
+	{{else}}
+	<article class="img">
+		<a href="/article/{{category_uri}}/{{objectId}}"><img src="images/no-image.png" /></a>
+	</article>
+	{{/with}}
+
+	<article class="article_textarea">
+		<a href="/{{category_uri}}" class="sub_subject">{{category}}</a>
+		<a href="/article/{{category}}/{{objectId}}">
+			<h3 class="sub_article_title">{{title}}</h3>
+			<div>
+				<span class="sub_writer">By {{ editor.name}}</span>
+				<span class="sub_writer sub_date">{{ fromNow }}</span><!--7 hours ago-->
+			</div>
+		</a>
+	</article>
+</li><!-- //기사 -->
