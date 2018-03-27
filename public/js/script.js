@@ -1,593 +1,114 @@
-var blockSize = 24;
-var columns = 10;
-var rows = 20;
-var maxRotations = 4;
-var FPS = 60;
-
-
-
-var UPDATE_INTERVAL = 1000.0/3.0; // 3 Squares per second.
-
-var LINES_PER_LEVEL = 10;
-
-var COLOR_EMPTY = '#101020';
-var COLOR_RED = '#aa2222';
-var COLOR_GREEN = '#22aa22';
-var COLOR_BLUE = '#2222aa';
-var COLOR_MAGENTA = '#aa22aa';
-
-var COLORS = [COLOR_RED,COLOR_GREEN,COLOR_BLUE,COLOR_MAGENTA];
-
-var SHAPE_EMPTY = [ [ 0, 0, 0, 0,
-                0, 0, 0, 0,
-                0, 0, 0, 0,
-                0, 0, 0, 0 ]  ];
-
-var SHAPE_O = [ [ 0, 0, 0, 0,
-                0, 1, 1, 0,
-                0, 1, 1, 0,
-                0, 0, 0, 0, ],
-               [ 0, 0, 0, 0,
-                0, 1, 1, 0,
-                0, 1, 1, 0,
-                0, 0, 0, 0, ],
-               [ 0, 0, 0, 0,
-                0, 1, 1, 0,
-                0, 1, 1, 0,
-                0, 0, 0, 0, ],
-               [ 0, 0, 0, 0,
-                0, 1, 1, 0,
-                0, 1, 1, 0,
-                0, 0, 0, 0, ] ];
-
-var SHAPE_I = [ [  0, 1, 0, 0,
-                   0, 1, 0, 0,
-                   0, 1, 0, 0,
-                   0, 1, 0, 0, ],
-                [  0, 0, 0, 0,
-                   1, 1, 1, 1,
-                   0, 0, 0, 0,
-                   0, 0, 0, 0, ],
-              [  0, 0, 1, 0,
-                   0, 0, 1, 0,
-                   0, 0, 1, 0,
-                   0, 0, 1, 0, ],
-                [  0, 0, 0, 0,
-                   0, 0, 0, 0,
-                   1, 1, 1, 1,
-                   0, 0, 0, 0, ]];
-
-var SHAPE_S = [ [  0, 0, 0, 0,
-                0, 0, 1, 1,
-                0, 1, 1, 0,
-                0, 0, 0, 0,  ],
-              [  0, 0, 0, 0,
-                0, 1, 0, 0,
-                0, 1, 1, 0,
-                0, 0, 1, 0,  ],
-              [  0, 0, 0, 0,
-                0, 0, 1, 1,
-                0, 1, 1, 0,
-                0, 0, 0, 0,  ],
-              [  0, 0, 0, 0,
-                0, 1, 0, 0,
-                0, 1, 1, 0,
-                0, 0, 1, 0,  ]];
-
-var SHAPE_Z = [ [  0, 0, 0, 0,
-                1, 1, 0, 0,
-                0, 1, 1, 0,
-                0, 0, 0, 0, ],
-              [  0, 0, 0, 0,
-                0, 0, 1, 0,
-                0, 1, 1, 0,
-                0, 1, 0, 0, ],
-              [  0, 0, 0, 0,
-                1, 1, 0, 0,
-                0, 1, 1, 0,
-                0, 0, 0, 0, ],
-              [  0, 0, 0, 0,
-                0, 0, 1, 0,
-                0, 1, 1, 0,
-                0, 1, 0, 0, ]];
-
-var SHAPE_L = [ [  0, 0, 0, 0,
-                0, 1, 0, 0,
-                0, 1, 0, 0,
-                0, 1, 1, 0, ],
-              [  0, 0, 0, 0,
-                0, 0, 0, 0,
-                0, 1, 1, 1,
-                0, 1, 0, 0, ],
-              [  0, 0, 0, 0,
-                0, 1, 1, 0,
-                0, 0, 1, 0,
-                0, 0, 1, 0, ],
-              [  0, 0, 0, 0,
-                0, 0, 0, 0,
-                0, 0, 0, 1,
-                0, 1, 1, 1, ]];
-
-var SHAPE_J = [ [  0, 0, 0, 0,
-                0, 0, 1, 0,
-                0, 0, 1, 0,
-                0, 1, 1, 0, ],
-              [  0, 0, 0, 0,
-                0, 0, 0, 0,
-                0, 1, 0, 0,
-                0, 1, 1, 1, ],
-              [  0, 0, 0, 0,
-                0, 1, 1, 0,
-                0, 1, 0, 0,
-                0, 1, 0, 0, ],
-              [  0, 0, 0, 0,
-                0, 0, 0, 0,
-                0, 1, 1, 1,
-                0, 0, 0, 1, ]];
-
-var SHAPE_T = [ [  0, 0, 0, 0,
-                1, 1, 1, 0,
-                0, 1, 0, 0,
-                0, 0, 0, 0, ],
-              [  0, 0, 0, 0,
-                0, 1, 0, 0,
-                1, 1, 0, 0,
-                0, 1, 0, 0, ],
-              [  0, 0, 0, 0,
-                0, 1, 0, 0,
-                1, 1, 1, 0,
-                0, 0, 0, 0, ],
-              [  0, 0, 0, 0,
-                0, 1, 0, 0,
-                0, 1, 1, 0,
-                0, 1, 0, 0, ]
-              ];
-
-var SHAPES = [ SHAPE_I , SHAPE_O,  SHAPE_S, SHAPE_Z, SHAPE_L, SHAPE_J, SHAPE_T ];
-
-var allowedShapes = SHAPES.length;
-
-/*
-  Helper Functions
-*/
-
-function updateStatus(val) {
-  $(".status").html(val);
-}
-
-function createArray(length) {
-    var arr = new Array(length || 0),
-        i = length;
-
-    if (arguments.length > 1) {
-        var args = Array.prototype.slice.call(arguments, 1);
-        while(i--) arr[length-1 - i] = createArray.apply(this, args);
-    }
-
-    return arr;
-}
-
-function ColorLuminance(hex, lum) {
-	// validate hex string
-	hex = String(hex).replace(/[^0-9a-f]/gi, '');
-	if (hex.length < 6) {
-		hex = hex[0]+hex[0]+hex[1]+hex[1]+hex[2]+hex[2];
+$(document).ready(function(){
+	//Canvas stuff
+	var canvas = $("#canvas")[0];
+	var ctx = canvas.getContext("2d");
+	var w = $("#canvas").width();
+	var h = $("#canvas").height();
+	
+	// variables
+	var cw = 10; //size of snake
+	var d; //direction
+	var food;
+	var score;
+	var speed = 50; //speed of snake
+	
+	//snake
+	var snake_array; 
+	
+	function init(){
+		d = "right"; //default direction
+		create_snake();
+		create_food(); 
+		score = 0;
+		
+		if(typeof game_loop != "undefined") clearInterval(game_loop);
+		game_loop = setInterval(paint, speed);
 	}
-	lum = lum || 0;
-
-	// convert to decimal and change luminosity
-	var rgb = "#", c, i;
-	for (i = 0; i < 3; i++) {
-    // convert the hex value into a int
-		c = parseInt(hex.substr(i*2,2), 16);
-    // multiply the new int with the luminance and ensure
-    // we keep the max and min value between 0 and 255
-    // convert the value back into hex
-		c = Math.round(Math.min(Math.max(0, c + (c * lum)), 255)).toString(16);
-		rgb += ("00"+c).substr(c.length);
+	init();
+	
+	function create_snake(){
+		var length = 20; //default length of snake
+		snake_array = [];
+		for(var i = length-1; i>=0; i--){
+			//This will create a horizontal snake starting from the top left
+			snake_array.push({x: i, y:0});
+		}
 	}
+	
+	function create_food(){
+		food = {
+			x: Math.round(Math.random()*(w-cw)/cw), 
+			y: Math.round(Math.random()*(h-cw)/cw), 
+		};
+	}
+	
+	//snake paint
+	function paint(){
+		//canvas paint
+		ctx.fillStyle = "white";
+		ctx.fillRect(0, 0, w, h);
+		ctx.strokeStyle = "black";
+		ctx.strokeRect(0, 0, w, h);
+		
+		var nx = snake_array[0].x;
+		var ny = snake_array[0].y;
 
-	return rgb;
-}
-
-function at(x,y,w) {
-  return x + y * w;
-}
-
-/* 
-  Misc Game functions
-*/
-
-function Block() {
-  this.x = 3;
-  this.y = -4;  
-  this.color = COLORS[Math.floor(( Math.random() * COLORS.length ))];
-  this.shape = SHAPE_EMPTY;  
-  this.shapeIndex = 0;
-  this.rotation = 0;
-  this.checkCollisionRight = false;
-  this.checkCollisionLeft = false;
-}
-
-function CellInfo() { // 빈 박스로 해서
-  this.color = COLOR_EMPTY;
-}
-
-function GameGrid() {  // 이게 전체 게임 그리드를 나타내는 함수 
-  this.cells = createArray(columns,rows); 
-  this.init = function() {
-    for(var x = 0; x < columns; x++) {
-      for(var y = 0; y < rows; y++) {
-        this.cells[x][y] = new CellInfo();
-        }
-    }
-  }; 
-}
-
-function getContext() {
-  var c = document.getElementById("tetris-game");
-  var ctx = c.getContext("2d");
-  return ctx;
-}
-
-// 1: One Line
-// 2: Two Lines
-// 3: ...
-var LINE_SCORE = [ 0, 40, 100, 300, 1200 ];
-
-function getScore(lines) {  
-  return level * LINE_SCORE[lines];
-}
-
-/*
-  Game Logic
-*/
-var isGameOver = false;
-var grid = undefined;
-var activeBlock = undefined;
-var nextBlock = undefined;
-var keyReady = false;  // 키보드 이벤트 
-var level = 1;
-var score = 0;
-var linesThisLevel = 0;
-var lastUpdate = new Date();
-$(document).ready(function() {
-  
-  $(document).keydown(function(event) {  // 키보드 방향키와 스페이스바에 대한 정의를 switch로 
-    if(keyReady === false) return;
-    var key = event.which;
-    switch(key) {
-      case 32: forceDown();
-        return false;
-        break;
-      case 37: moveLeft();
-        break;
-      case 38: rotate();
-        return false;
-        break;
-      case 39: moveRight();
-        break;
-      case 40: moveDown();
-        return false;
-        break;
-    }
-    handleCollision();
-  });
-  
-  function startGame() {
-    updateStatus("");   
-    
-    grid = new GameGrid();
-        
-    score = 0;
-    setLevel(1);
-    isGameOver = false;
-
-    gameLoop();
-  }
-     
-  function setLevel(lvl) {
-    linesThisLevel = 0;
-    level = lvl; 
-    grid.init();
-  }
-  
-  function rotate() {
-    if(activeBlock !== undefined) {  // activeblock이 값이 할당 되었다면 
-      activeBlock.rotation++;  // rotation 을 1 오린다 
-      
-      if(activeBlock.rotation == maxRotations)  // 각 블럭 마다 maxrotation이 다를거고 네모 같은경우 움직이지 않게 하기위해서
-        activeBlock.rotation = 0;
-      
-      activeBlock.shape = SHAPES[activeBlock.shapeIndex][activeBlock.rotation];   // 각 블럭들 움직이는것 
-    }
-  }  
-  function moveDown() {
-    applyGravity();
-    
-    handleCollision();  
-  }
-  
-  function moveLeft() {    // 방향키 왼쪽 클릭시 움직임 
-    if(activeBlock!=undefined) {   // 할당 받았ㄷ면 
-      activeBlock.x--;  // x축 왼쪽으로 한칸 
-      activeBlock.checkCollisionRight = false; // 오른쪽 안가 
-      activeBlock.checkCollisionLeft = true;  // 왼쪽만
-    }    
-  }
-  function moveRight() {
-    if(activeBlock!=undefined) {  // 할당받았다면
-      activeBlock.x++;  // x축 오른쪽으로
-      activeBlock.checkCollisionRight = true; // 오른쪽만
-      activeBlock.checkCollisionLeft = false;  // 왼쪽안가
-    }
-  }
-  function forceDown() {
-    
-    for(var i = 0; i < rows; i++) {
-      applyGravity();
-      handleCollision();  
-    }
-    checkLines();
-  }
-  
-  function createBlock() {
-      var activeBlock = new Block();
-      activeBlock.shapeIndex = Math.floor(( Math.random() * allowedShapes )) ;
-      activeBlock.rotation = 0;//Math.floor(( Math.random() * maxRotations ));
-      activeBlock.shape = SHAPES[ activeBlock.shapeIndex ][activeBlock.rotation];
-    return activeBlock;
-  }
-  
-  function gameLoop() {            
-    keyReady = true;
-    if(activeBlock == undefined) {  // 활동 블럭이 없고
-      if(nextBlock == undefined){  // 다음 블럭이 없다면 
-          activeBlock = createBlock();  // 블럭을 만들고 
-        }
-      else {
-        activeBlock = nextBlock;  // 다음블럭이 있다면 다음블럭이 활동해라
-      }
-      nextBlock = createBlock(); // 활동블럭이 없으면 다음 활동블럭을 만들어라 
-    }
-    
-    $(".score").html("You have <b>" + score + "</b> points");
-    $(".level").html("You are on level <b>"+level+"</b>");
-        
-    checkLines();
-    
-    var timeNow = new Date();
-    if( Math.abs(timeNow - lastUpdate) > UPDATE_INTERVAL ) {
-    
-      if( isGameOver === true ) return;
-
-      applyGravity();        
-
-      handleCollision();    
-      
-      lastUpdate = timeNow;
-    }
-    
-    drawGameboard();
-    
-    drawNextBlock();
-    
-   
-    
-    if( isGameOver === true ) return;
-    
-    if( linesThisLevel >= LINES_PER_LEVEL ) {
-      setLevel(level+1);
-      activeBlock = undefined;
-      updateStatus("<font style='color: green;'>Yay! Congratulations! You've completed level " + level-1 + "!</font>");
-    }
-    
-    setTimeout(gameLoop, 1000 / (FPS + ((level-1)*2)));
-  }
-  
-  function handleCollision() {
-      var hitGround = forceInsideBounds();
-      if( hitGround ) {
-        stickBlock();
-        
-        checkLines(); 
-        
-        activeBlock = undefined;               
-      }
-    return false;
-  }
-  
-  function checkLines() {
-    var linesRemoved = 0;
-    for(var y = 0; y < rows; y++) {
-      var cellsThisRow = 0;
-      for(var x = 0; x < columns; x++) {
-        if(grid.cells[x][y].color !== COLOR_EMPTY) {
-          cellsThisRow++;          
-          if( y < 2 ) {
-            gameOver();                 
-            return
-          }
-        }        
-        if(cellsThisRow == columns) {  
-          cellsThisRow = 0;
-          linesRemoved++; 
-          removeLine(y);
-          break;
-        }
-      }
-    }
-    linesThisLevel += linesRemoved;
-    score += getScore(linesRemoved);
-  }
-  
-  function removeLine(row) {
-    updateStatus("Remove Line: " + row);
-    for(var x = 0; x < columns; x++) {
-      grid.cells[x][row].color = COLOR_EMPTY;
-    }
-    
-        
-     for(var y = row; y > 0; y--) {
-      for(var x = 0; x < columns; x++) {
-        if(y-1>=0) {
-          grid.cells[x][y].color = grid.cells[x][y-1].color;
-        }
-      }
-    } 
-    
-  }
-  
-  function gameOver() {
-    isGameOver=true;
-    activeBlock = undefined;
-    updateStatus("<font style='color: red;'><b>Game Over!</b><br/>New game will start in 3 seconds</font>");
-    setTimeout(startGame,3000);
-  }   
-  
-  function forceInsideBounds() {
-    if(activeBlock != undefined) { 
-      
-      for(var col = 0; col < 4; col++) {
-          for(var row = 0; row < 4; row++) {  
-            var cellValue = activeBlock.shape[col + row * 4];
-            if(cellValue == 1) {
-              var x = activeBlock.x + col;              
-              var y = activeBlock.y + row;
-                            
-              if( x >= columns ) {
-               // updateStatus("Force insideBounds: x >= col" );
-                activeBlock.x--;
-                return false;
-              }
-              
-              if( x < 0 ) {
-             //   updateStatus("Force insideBounds: x < col" );
-                activeBlock.x++;
-                return false;
-              }
-              
-              if( y >= rows ) {
-            //    updateStatus("Force insideBounds: y > row" );
-                activeBlock.y--;
-                return true;
-              } 
-              
-              if(grid.cells[x][y] !== undefined && grid.cells[x][y].color !== COLOR_EMPTY) {
-                // return true;
-                if(activeBlock.checkCollisionRight === true) { 
-                  activeBlock.checkCollisionRight = false;
-                  activeBlock.x--; // Force jump to the left
-                  return false;
-                }
-                else if(activeBlock.checkCollisionLeft === true) { 
-                  activeBlock.checkCollisionLeft = false;
-                  activeBlock.x++; // Force jump to the right
-                  return false;
-                }
-                else {
-                  activeBlock.y--;                  
-                  return true;
-                }
-              }
-              
-            }
-          } // end for
-        } // end for
-      activeBlock.checkCollisionLeft = false;
-      activeBlock.checkCollisionRight = false;
-    } // end if         
-    return false;
-  }
-  
-  function applyGravity() {
-    if(activeBlock != undefined) {      
-      activeBlock.y++;
-    }
-  }  
-
-  function drawBackground(x, y, w, h)
-  {
-    for(var col = 0; col < w; col++) {
-      for(var row = 0; row < h; row++) {        
-        drawCell(col+x,row+y, COLOR_EMPTY);
-      }
-    }
-  }
-  
-  function drawGameboard() {
-    for(var col = 0; col < columns; col++) {
-      for(var row = 0; row < rows; row++) {        
-        drawCell(col,row, grid.cells[col][row].color);
-      }
-    }
-    
-            
-    if( activeBlock != undefined) {
-      
-      drawBlock(activeBlock, activeBlock.x, activeBlock.y);
-
-    } // end if     
-  }
-  
-  function stickBlock() {
-    if( activeBlock != undefined) {
-      for(var col = 0; col < 4; col++) {
-          for(var row = 0; row < 4; row++) {  
-            var cellValue = activeBlock.shape[col + row * 4];
-            if(cellValue == 1) {
-              var x = col+activeBlock.x;
-              var y = row+activeBlock.y;
-              if( activeBlock == undefined ) return;
-              grid.cells[x][y].color = activeBlock.color;
-            }
-          } // end for
-        } // end for 
-    } // end if
-  }
-  
-  function drawBlock(block,x,y, color)
-  {
-    for(var col = 0; col < 4; col++) {
-          for(var row = 0; row < 4; row++) {  
-            var cellValue = block.shape[col + row * 4];
-            if(cellValue == 1) {
-              var targetX = x + col;
-              var targetY = y + row;
-              if(targetY >= 0 && targetX >= 0) {
-                if(color === undefined)
-                  drawCell(targetX, targetY, block.color);
-                else 
-                  drawCell(targetX, targetY, color);
-              }
-            }
-          } // end for
-        }
-  }
-  
-  
-  function drawNextBlock() {
-     drawBackground(columns+2,2,4,4);
-     drawBlock(nextBlock, columns+2,2);
-     
-  }
-  
-  function drawCell(x,y,color) {
-    var lighter = ColorLuminance(color, 0.2);
-    var darker = ColorLuminance(color, -0.2);
-    var borderWidth = 2;
-    var ctx = getContext();
-    ctx.fillStyle = color;
-    ctx.fillRect(x * blockSize, y * blockSize, blockSize, blockSize);
-    
-    ctx.fillStyle = lighter;
-    ctx.fillRect(x * blockSize, y * blockSize, blockSize, borderWidth);
-    ctx.fillRect((x * blockSize) + blockSize - borderWidth, y * blockSize, borderWidth, blockSize);
-    
-    ctx.fillStyle = darker;
-    ctx.fillRect(x * blockSize, (y * blockSize) + blockSize - borderWidth, blockSize, borderWidth);
-    ctx.fillRect(x * blockSize, y * blockSize, borderWidth, blockSize);    
-  }  
-  
-  startGame();  
-});
+		if(d == "right") nx++;
+		else if(d == "left") nx--;
+		else if(d == "up") ny--;
+		else if(d == "down") ny++;
+		
+		if(nx == -1 || nx == w/cw || ny == -1 || ny == h/cw || check_collision(nx, ny, snake_array)){
+			init(); // 초기화 함수 
+			return;
+		}  // 게임 over가 되는 경우의 수들 네모 왼,오른,위,아래 쪽으로 나갈시 , 꼬리 밟았을때 게임 over
+		
+		if(nx == food.x && ny == food.y){
+			var tail = {x: nx, y: ny};
+			score++;
+			create_food();
+		}  // 먹을경우 점수 + , 먹이 생성 
+		else{
+			var tail = snake_array.pop();
+			tail.x = nx; tail.y = ny;
+		}
+		//The snake can now eat the food.
+		
+		snake_array.unshift(tail);
+		
+		for(var i = 0; i < snake_array.length; i++){
+			var c = snake_array[i];
+			paint_cell(c.x, c.y);
+		}
+		
+		//food paint
+		paint_cell(food.x, food.y);
+		var score_text = "Score: " + score;
+		ctx.fillText(score_text, 5, h-5);
+	}
+	
+	//lets first create a generic function to paint cells
+	function paint_cell(x, y){
+		ctx.fillStyle = "black";
+		ctx.fillRect(x*cw, y*cw, cw, cw);
+		ctx.strokeStyle = "white";
+		ctx.strokeRect(x*cw, y*cw, cw, cw);
+	}
+	
+	function check_collision(x, y, array){
+		for(var i = 0; i < array.length; i++){
+			if(array[i].x == x && array[i].y == y)
+			 return true;
+		}
+		return false;
+	}
+	
+	//keyboard controls
+	$(document).keydown(function(e){
+		var key = e.which;
+		if(key == "37" && d != "right") d = "left";
+		else if(key == "38" && d != "down") d = "up";
+		else if(key == "39" && d != "left") d = "right";
+		else if(key == "40" && d != "up") d = "down";
+	})	
+})
