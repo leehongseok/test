@@ -1,2 +1,17 @@
-<h1>{{title}}</h1>
-<p>Welcome to {{title}}</p>
+<div class="controls">
+  <h3>Controls</h3>
+  <ul>
+    <li>Up Arrow - Rotate</li>
+    <li>Down Arrow - Move Down</li>
+    <li>Left Arrow - Move Left</li>
+    <li>Right Arrow - Move Right</li>
+    <li>Spacebar - Force Down</li>
+  </ul>
+  <p>If you don't get a "Game Over" just re-run this pen. It is still a bit buggy.</p>
+  <div class="score">You have <b>0</b> points</div>
+  <div class="level">You are on level <b>1</b></div>
+  <div class="status"></div>
+</div>
+
+<canvas id="tetris-game" width="432" height="480" style="border:1px solid #000000;">
+</canvas>

@@ -1,8 +1,9 @@
-body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif; }
+.controls {
+  float: left;
+  width: 250px;
+  height: auto; }
 
-a {
-  color: #00B7FF; }
+#tetris-game {
+  margin-left: 50px; }
 
 /*# sourceMappingURL=style.css.map */
