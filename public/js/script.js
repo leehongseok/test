@@ -1,4 +1,4 @@
-$(document).ready(function(){
+$/*(document).ready(function(){
 	//Canvas stuff
 	var canvas = $("#canvas")[0];
 	var ctx = canvas.getContext("2d");
@@ -111,4 +111,7 @@ $(document).ready(function(){
 		else if(key == "39" && d != "left") d = "right";
 		else if(key == "40" && d != "up") d = "down";
 	})	
-})
+})*/
+
+
+console.log("nice to meet you");
